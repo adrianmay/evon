@@ -66,34 +66,42 @@ function go() {
 
   function nicetime(n) { return Math.floor(n*1000000).toLocaleString(); }
 
+  function run (mech, cas) {
+    whenStart = performance.now();
+    var co = mech.stringify(cas[0]);
+    whenStop = performance.now();
+    var en = whenStop-whenStart;
+    whenStart = performance.now();
+    var re = mech.parse(co);
+    whenStop = performance.now();
+    var de = whenStop-whenStart;
+    su = check(cas[0], re, true, cas[1]);
+    return [en, de, su];
+  }
+
+  var sample=100, skip=20;
+  function ana(s) {
+    var su=s[skip][2];
+    var en=s[skip][0];
+    var de=s[skip][1];
+    for (var i=skip+1;i<sample;i++) {
+      en+=s[i][0];
+      de+=s[i][1];
+      if (s[i][2]!==su) su="mixed";
+    }
+    en/=sample-skip;
+    de/=sample-skip;
+    return [nicetime(en), nicetime(de), su];
+  }
   for (var ca in cases) {
     var cas = cases[ca];
+    var js=[], es=[];
+    for (var i=0;i<sample*2;i++) {
+      if (i%2==1) js.push(run(JSON, cas));
+      else es.push(run(EVON, cas));
+    }
 
-    whenStart = performance.now();
-    var j_co = JSON.stringify(cas[0]);
-    whenStop = performance.now();
-    var j_en = nicetime(whenStop-whenStart);
-
-    whenStart = performance.now();
-    var j_re = JSON.parse(j_co);
-    whenStop = performance.now();
-    var j_de = nicetime(whenStop-whenStart);
-
-    j_su = check(cas[0], j_re, true, cas[1]);
-
-    whenStart = performance.now();
-    var e_co = EVON.stringify(cas[0]);
-    whenStop = performance.now();
-    var e_en = nicetime(whenStop-whenStart);
-
-    whenStart = performance.now();
-    var e_re = EVON.parse(e_co);
-    whenStop = performance.now();
-    var e_de = nicetime(whenStop-whenStart);
-
-    e_su = check(cas[0], e_re, true, cas[1]);
-
-    show.innerHTML += format([ [j_en, j_de, j_su], [e_en, e_de, e_su] ]);
+    show.innerHTML += format([ana(js),ana(es)]);
   }
 
 }
