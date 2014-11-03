@@ -11,6 +11,8 @@ Compare:
 
 Feature | JSON | evon
 ---|---|---
-Arrays: non-numerically names properties | Discarded | Restored
+Arrays: non-numerically named properties | Discarded | Restored
+Arrays: Sparse entries | All restored as null | Distinction made between null, undefined and non-existent. Length restored accurately
+Prototype | Discarded | Restored if object.constructor evaluates to a constructor function
+Constructor parameters | No constructor ever called anyway | object.constructorParameters() may return a list of parameters to pass to the constructor upon restoration. Versions for Date etc provided
 
-Evon serialisation preserves non-numerically named properties of arrays, all kinds of sparse entries (without just restoring them all as null) prototypes
