@@ -2,13 +2,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    browserify: {
-      evon: {
-        files: {
-          '<%= pkg.name %>.max.js' : ['src/unbrowserify.js']
-        }
-      }
-    },
     uglify: {
       build: {
         src: '<%= pkg.name %>.max.js',
@@ -17,10 +10,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-
-  grunt.registerTask('default', ['browserify', 'uglify']);
-
+  grunt.registerTask('default', ['uglify']);
 }
 

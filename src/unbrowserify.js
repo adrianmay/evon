@@ -1,1 +1,0 @@
-global.EVON = require('./evon');
