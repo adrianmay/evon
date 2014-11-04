@@ -27,14 +27,22 @@ var cases = {
   num: [ 42, null ],
   tru: [ true, null ],
   fls: [ false, null ],
-  rex: [ /.*/, null], 
+  rex: [ /.?/, null], 
   obj: [ { foo: 'bar', two: 2}, null ],
   arr: [ ['the', 3, 'bears'], null ],
   bigarray: [ ay, null ],
   horse: [dobbin, function(a,b) { return (stable[2]===b);}],
-  nested: [ [ 1, "two", {foo:'bar',two:2}, undefined, null, [10,20,30,40], true]]
+  nested: [ [ 1, "two", {foo:'bar',two:2}, undefined, null, [10,20,30,40], true]],
+  multiref: [ [], function(a,b) { b[0][0].that[0]='big'; return (b[1][0].that[0]=='big');} ]
 };
 
-
+var multipig = [ 
+  { that: ['little', 'piggy'], went: [2, 'market'] }, 
+  { that: ['little', 'piggy'], stayed: "home" }, 
+  { that: ['little', 'piggy'], had: ['roast','beef'] }, 
+  { that: ['little', 'piggy'], had: 0 } 
+]
+for (var i=0;i<100;i++) 
+  cases.multiref[0].push(multipig);
 
 

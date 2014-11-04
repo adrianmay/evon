@@ -66,7 +66,17 @@ function go() {
         return "<"+e+">"+body+"</"+e+">"
       }
     }
-    return el("tr")( el("td")(title) + el("td")(res[0][0]) + el("td")(res[0][1]) + el("td")(res[0][2]) + el("td")(res[0][3]) + el("td")(res[1][0]) + el("td")(res[1][1]) + el("td")(res[1][2]) + el("td")(res[1][3])  ) 
+    return el("tr")( el("td")(title) + 
+                    el("td")(viewable(res[0][0])) + 
+                    el("td")(String(res[0][0]).length) + 
+                    el("td")(res[0][1]) + 
+                    el("td")(res[0][2]) + 
+                    el("td")(res[0][3]) + 
+                    el("td")(viewable(res[1][0])) + 
+                    el("td")(String(res[1][0]).length) + 
+                    el("td")(res[1][1]) + 
+                    el("td")(res[1][2]) + 
+                    el("td")(res[1][3])  ) 
   }
 
   function nicetime(n) { return Math.floor(n*1000000).toLocaleString(); }
@@ -93,7 +103,8 @@ function go() {
     else return String(s);
   }
 
-  var sample=100, skip=20;
+  //var sample=1, skip=0;
+  var sample=50, skip=10;
   function ana(s) {
     var su=s[skip][3];
     var en=s[skip][1];
@@ -105,9 +116,9 @@ function go() {
     }
     en/=sample-skip;
     de/=sample-skip;
-    return [viewable(s[skip][0]), nicetime(en), nicetime(de), su];
+    return [s[skip][0], nicetime(en), nicetime(de), su];
   }
-  for (var ca in cases) {
+  for (var ca in cases) if (cases.hasOwnProperty(ca)){
     var cas = cases[ca];
     var js=[], es=[];
     for (var i=0;i<sample*2;i++) {
