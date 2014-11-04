@@ -1,5 +1,6 @@
 "use strict"
 
+//IE needs polyfill for constructor.name
 
 var EVON = {
   stringify: function (ob) {
