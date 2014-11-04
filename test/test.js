@@ -1,3 +1,6 @@
+
+
+
 function comp_simple_arrays(as, bs) {
   if (as.length == 0 && bs.length == 0)
     return true;
@@ -31,12 +34,14 @@ function check(a, b, exact, extra) {
     return (a.toString()===b.toString());
   if (typeof a !== 'object') 
     return (a===b);
+  if (a===null && b===null)
+    return true;
   if (!check_deep(a, b, exact))
     return false;
   if (exact) {
     if (a.constructor !== b.constructor)
       return false;
-    if (!check(Object.getPrototypeOf(a), Object.getPrototypeOf(a), false)) 
+    if (!check(Object.getPrototypeOf(a), Object.getPrototypeOf(a), true)) 
       return false;
   }
   if (extra)
@@ -54,14 +59,14 @@ var whenStart, whenStop;
 function go() {
   var show = document.getElementById('show');
 
-  function format(res) {
+  function format(title, res) {
     //res is [jres, eres] where xres is [encoding time, decoding time, suc]
     function el(e) {
       return function(body) {
         return "<"+e+">"+body+"</"+e+">"
       }
     }
-    return el("tr")( el("td")(res[0][0]) + el("td")(res[0][1]) + el("td")(res[0][2]) + el("td")(res[1][0]) + el("td")(res[1][1]) + el("td")(res[1][2])  ) 
+    return el("tr")( el("td")(title) + el("td")(res[0][0]) + el("td")(res[0][1]) + el("td")(res[0][2]) + el("td")(res[0][3]) + el("td")(res[1][0]) + el("td")(res[1][1]) + el("td")(res[1][2]) + el("td")(res[1][3])  ) 
   }
 
   function nicetime(n) { return Math.floor(n*1000000).toLocaleString(); }
@@ -71,27 +76,36 @@ function go() {
     var co = mech.stringify(cas[0]);
     whenStop = performance.now();
     var en = whenStop-whenStart;
-    whenStart = performance.now();
-    var re = mech.parse(co);
-    whenStop = performance.now();
+    try {
+      whenStart = performance.now();
+      var re = mech.parse(co);
+      whenStop = performance.now();
+    } catch (e) {
+      return [co, en, 0, false];
+    }
     var de = whenStop-whenStart;
     su = check(cas[0], re, true, cas[1]);
-    return [en, de, su];
+    return [co, en, de, su];
+  }
+
+  function viewable(s) {
+    if (typeof s === 'string') return s.substring(0,30);
+    else return String(s);
   }
 
   var sample=100, skip=20;
   function ana(s) {
-    var su=s[skip][2];
-    var en=s[skip][0];
-    var de=s[skip][1];
+    var su=s[skip][3];
+    var en=s[skip][1];
+    var de=s[skip][2];
     for (var i=skip+1;i<sample;i++) {
-      en+=s[i][0];
-      de+=s[i][1];
-      if (s[i][2]!==su) su="mixed";
+      en+=s[i][1];
+      de+=s[i][2];
+      if (s[i][3]!==su) su="mixed";
     }
     en/=sample-skip;
     de/=sample-skip;
-    return [nicetime(en), nicetime(de), su];
+    return [viewable(s[skip][0]), nicetime(en), nicetime(de), su];
   }
   for (var ca in cases) {
     var cas = cases[ca];
@@ -101,7 +115,7 @@ function go() {
       else es.push(run(EVON, cas));
     }
 
-    show.innerHTML += format([ana(js),ana(es)]);
+    show.innerHTML += format(ca, [ana(js),ana(es)]);
   }
 
 }
