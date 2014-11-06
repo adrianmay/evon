@@ -23,7 +23,7 @@ var EVON = {
     var ct = EVON._stringify(ob);
     var k;
     while (k=EVON.toclean.pop()) delete k._evon_serial;
-    //console.log(ct);
+    console.log(ct);
     return ct;
   },
   _stringify : function (ob) {
@@ -33,12 +33,12 @@ var EVON = {
     else {
       if (ob._evon_serial!==undefined)
         return "h["+ob._evon_serial+"]"
-      var ct = "new "+ob.constructor.name+"("+(ob.getCtorParams ? ob.getCtorParams() : "")+")";
-      for (var k in ob) if (ob.hasOwnProperty(k))
-        ct = "_("+ct+",'"+k+"',"+EVON._stringify(ob[k])+")";
       ob._evon_serial = EVON.serial++;
       EVON.toclean.push(ob);
-      ct = "h["+ob._evon_serial+"]="+ct;
+      var ct = "h["+ob._evon_serial+"]="+"new "+ob.constructor.name+"("+(ob.getCtorParams ? ob.getCtorParams() : "")+")";
+      for (var k in ob) if (k!=='_evon_serial') if (ob.hasOwnProperty(k))
+        ct = "_("+ct+",'"+k+"',"+EVON._stringify(ob[k])+")";
+      //ct = "h["+ob._evon_serial+"]="+ct;
       return ct;
     }
   },
