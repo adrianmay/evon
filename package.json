@@ -1,6 +1,6 @@
 {
   "name": "evon",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "More Accurate Than JSON and nearly as fast",
   "main": "src/evon.js",
   "repository": {
