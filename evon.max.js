@@ -23,7 +23,7 @@ var EVON = {
     var ct = EVON._stringify(ob);
     var k;
     while (k=EVON.toclean.pop()) delete k._evon_serial;
-    console.log(ct);
+    //console.log(ct);
     return ct;
   },
   _stringify : function (ob) {
