@@ -18,5 +18,5 @@ Constructor parameters | No constructor ever called anyway | object.getCtorParam
 Circular references | Explicitly bottles out | Restored
 Multiple references to same object | Object duplicated | Restored correctly
 
-You can run http://adrianmay.github.io/evon/test/test.html' to compare the performance with JSON.
+You can run http://adrianmay.github.io/evon/test/test.html to compare the performance with JSON.
 
