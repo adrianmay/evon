@@ -33,7 +33,8 @@ var cases = {
   bigarray: [ ay, null ],
   horse: [dobbin, function(a,b) { return (stable[2]===b);}],
   nested: [ [ 1, "two", {foo:'bar',two:2}, undefined, null, [10,20,30,40], true]],
-  multiref: [ [], function(a,b) { b[0][0].that[0]='big'; return (b[1][0].that[0]=='big');} ]
+  multiref: [ [], function(a,b) { b[0][0].that[0]='big'; return (b[1][0].that[0]=='big');} ],
+  circ: [ { name: 'round and round'}, null]
 };
 
 var multipig = [ 
@@ -45,4 +46,5 @@ var multipig = [
 for (var i=0;i<100;i++) 
   cases.multiref[0].push(multipig);
 
+cases.circ[0].selfref = cases.circ[0];
 

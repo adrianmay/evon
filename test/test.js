@@ -9,9 +9,9 @@ function comp_simple_arrays(as, bs) {
   else return false;
 }
 
-function check_deep(a, b, exact) {
+function check_deep(a, b, exclude) {
   var ap=[], bp=[]
-  for (var k in a) if (a.hasOwnProperty(k))
+  for (var k in a) if (a.hasOwnProperty(k)) //recursing too deep
     ap.push(k)
   for (var k in b) if (a.hasOwnProperty(k))
     bp.push(k)
@@ -21,13 +21,19 @@ function check_deep(a, b, exact) {
     return false;
   //Just wrecked ap and bp
   for (var k in a) if (a.hasOwnProperty(k)) {
-    if (!check(a[k], b[k], exact))
+    if (!check(a[k], b[k], undefined, exclude))
       return false;
   }
   return true;
 }
 
-function check(a, b, exact, extra) {
+function contains(arr, obj) {
+  for(var i=0; i<arr.length; i++) {
+    if (arr[i] == obj) return true;
+  }
+}
+
+function check(a, b, extra, exclude) {
   if (typeof a !== typeof b) 
     return false;
   if (typeof a === 'function') 
@@ -36,14 +42,15 @@ function check(a, b, exact, extra) {
     return (a===b);
   if (a===null && b===null)
     return true;
-  if (!check_deep(a, b, exact))
+  if (contains(exclude,a))
+    return true;
+  exclude.push(a);
+  if (!check_deep(a, b, exclude))
     return false;
-  if (exact) {
-    if (a.constructor !== b.constructor)
-      return false;
-    if (!check(Object.getPrototypeOf(a), Object.getPrototypeOf(a), true)) 
-      return false;
-  }
+  if (a.constructor !== b.constructor)
+    return false;
+  if (!check(Object.getPrototypeOf(a), Object.getPrototypeOf(a), undefined, exclude)) 
+    return false;
   if (extra)
     return extra(a,b);
   return true;
@@ -82,9 +89,13 @@ function go() {
   function nicetime(n) { return Math.floor(n*1000000).toLocaleString(); }
 
   function run (mech, cas) {
-    whenStart = performance.now();
-    var co = mech.stringify(cas[0]);
-    whenStop = performance.now();
+    try {
+      whenStart = performance.now();
+      var co = mech.stringify(cas[0]);
+      whenStop = performance.now();
+    } catch (e) {
+      return [e, 0, 0, false];
+    }
     var en = whenStop-whenStart;
     try {
       whenStart = performance.now();
@@ -94,7 +105,7 @@ function go() {
       return [co, en, 0, false];
     }
     var de = whenStop-whenStart;
-    su = check(cas[0], re, true, cas[1]);
+    su = check(cas[0], re, cas[1], []);
     return [co, en, de, su];
   }
 
